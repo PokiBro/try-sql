@@ -1,0 +1,33 @@
+import sqlite3
+con = sqlite3.connect('C:\\Users\\Admin\\Desktop\\CTF\\database.db')
+curcor = con.cursor()
+def new_goods(curcor,id,name,description,price):
+    curcor.execute("INSERT INTO goods(id,name,description,price) VALUES({},{},{},{})".format(id,name,description,price))
+    curcor.execute("SELECT * FROM goods ")
+    return(curcor.fetchall())
+
+def new_user(curcor,id,name,surname,email):
+    curcor.execute("INSERT INTO users(id,name,surname,email) VALUES({},{},{},{})".format(id,name,surname,email))
+    curcor.execute("SELECT * FROM users ")
+    return(curcor.fetchall())
+
+def new_order(curcor,order_id,good_id,good_count,user_id):
+    
+    curcor.execute("INSERT INTO goods_in_order(order_id,good_id,good_count,user_id) VALUES({},{},{},{})".format(order_id,good_id,good_count,user_id))
+    curcor.execute("SELECT * FROM goods_in_order ")
+    return(curcor.fetchall())
+
+print("что вы хотите сделать? добавить товар - 0, добавить пользователя - 1, добавтиь заказ - 2")
+a = int(input())
+if a == 0:
+    print("введите id товара,имя товара, описание товара,цену товара. ИМЕННО В ЭТОЙ ПОСЛЕДОВАТЕЛЬНОСТИ")
+    print(new_goods(curcor,int(input()),"'" +input() + "'","'" + input() + "'", int(input())))
+if a == 1:
+    print("введите id пользователя,имя пользователя, фамилию и емэил. ИМЕННО В ЭТОЙ ПОСЛЕДОВАТЕЛЬНОСТИ")
+    print(new_user(curcor,int(input()),"'" +input() +"'","'" + input() + "'", "'"+ input() + "'"))
+if a == 2:
+    print("введите id заказа, id товара, количество товара, id пользователя. ИМЕННО В ЭТОЙ ПОСЛЕДОВАТЕЛЬНОСТИ")
+    print(new_order(curcor,int(input()),int(input()),int(input()), int(input())))
+    
+
+con.commit()
