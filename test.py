@@ -3,22 +3,34 @@ con = sqlite3.connect('C:\\Users\\Admin\\Desktop\\CTF\\database.db')
 curcor = con.cursor()
 def new_goods(curcor,id,name,description,price):
     curcor.execute("INSERT INTO goods(id,name,description,price) VALUES({},{},{},{})".format(id,name,description,price))
-    curcor.execute("SELECT * FROM goods ")
+    curcor.execute("SELECT id,name,description,price FROM goods ")
     return(curcor.fetchall())
 
 def new_user(curcor,id,name,surname,email):
     curcor.execute("INSERT INTO users(id,name,surname,email) VALUES({},{},{},{})".format(id,name,surname,email))
-    curcor.execute("SELECT * FROM users ")
+    curcor.execute("SELECT id,name,surname,email FROM users ")
     return(curcor.fetchall())
 
 def new_order(curcor,order_id,good_id,good_count,user_id):
     
     curcor.execute("INSERT INTO goods_in_order(order_id,good_id,good_count,user_id) VALUES({},{},{},{})".format(order_id,good_id,good_count,user_id))
-    curcor.execute("SELECT * FROM goods_in_order ")
+    curcor.execute("SELECT order_id,good_id,good_count,user_id FROM goods_in_order ")
+    return(curcor.fetchall())
+def take_order_from_USER_ID(curcor,user_id):
+    curcor.execute("SELECT order_id,good_id,good_count,user_id FROM goods_in_order WHERE user_id == {}".format(user_id))
     return(curcor.fetchall())
 
-print("что вы хотите сделать? добавить товар - 0, добавить пользователя - 1, добавтиь заказ - 2")
+def take_order_from_email(curcor,email):
+    user_id = curcor.execute("SELECT id FROM users WHERE email == {}".format(email)) # THIS DOESNT WORK HOW I WANT
+    curcor.execute("SELECT order_id,good_id,good_count,user_id FROM goods_in_order WHERE user_id == {}".format(user_id))
+    return(curcor.fetchall())
+
+print("что вы хотите сделать? добавить товар - 0, добавить пользователя - 1, добавтиь заказ - 2,3 - посмотреть заказы пользователя")
 a = int(input())
+test = curcor.execute('SELECT order_id,good_id,good_count,user_id FROM goods_in_order')
+print(test.fetchall())
+test2 = curcor.execute("SELECT id,name,surname,email FROM users ")
+print(test2.fetchall())
 if a == 0:
     print("введите id товара,имя товара, описание товара,цену товара. ИМЕННО В ЭТОЙ ПОСЛЕДОВАТЕЛЬНОСТИ")
     print(new_goods(curcor,int(input()),"'" +input() + "'","'" + input() + "'", int(input())))
@@ -28,6 +40,12 @@ if a == 1:
 if a == 2:
     print("введите id заказа, id товара, количество товара, id пользователя. ИМЕННО В ЭТОЙ ПОСЛЕДОВАТЕЛЬНОСТИ")
     print(new_order(curcor,int(input()),int(input()),int(input()), int(input())))
+
+if a == 3:
+    print('введите id пользователя')
+    print(take_order_from_USER_ID(curcor,int(input())))
+
+
     
 
 con.commit()
