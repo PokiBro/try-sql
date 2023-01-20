@@ -21,8 +21,7 @@ def take_order_from_USER_ID(curcor,user_id):
     return(curcor.fetchall())
 
 def take_order_from_email(curcor,email):
-    user_id = curcor.execute("SELECT id FROM users WHERE email == {}".format(email)) # THIS DOESNT WORK HOW I WANT
-    curcor.execute("SELECT order_id,good_id,good_count,user_id FROM goods_in_order WHERE user_id == {}".format(user_id))
+    curcor.execute("SELECT order_id,good_id,good_count,user_id FROM goods_in_order WHERE user_id IN (SELECT id FROM users WHERE email = {})".format(email))
     return(curcor.fetchall())
 
 print("что вы хотите сделать? добавить товар - 0, добавить пользователя - 1, добавтиь заказ - 2,3 - посмотреть заказы пользователя")
@@ -42,8 +41,14 @@ if a == 2:
     print(new_order(curcor,int(input()),int(input()),int(input()), int(input())))
 
 if a == 3:
-    print('введите id пользователя')
-    print(take_order_from_USER_ID(curcor,int(input())))
+    print("введите 1 - если знаете id пользователя, введите 2 если знаете почту пользователя")
+    a = int(input())
+    if a == 1:
+        print('введите id пользователя')
+        print(take_order_from_USER_ID(curcor, int(input())))
+    if a == 2:
+        print("введите email пользователя")
+        print(take_order_from_email(curcor, "'" + input() + "'"))
 
 
     
